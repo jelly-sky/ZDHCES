@@ -26,16 +26,18 @@ class TestPublishArticle:
         logging.info("用例的数据如下：用户名：{}， 验证码：{}，"
                      " 预期结果：{}".format(username, code, expect))
         self.login_proxy.login(username, code)
-        time.sleep(3)
-        # 用JavaScript关闭登录后的警告弹窗
+        # 等待弹窗出现，然后关闭
         driver = UtilsDriver.get_mp_driver()
-        driver.execute_script(""
-            var overlays = document.querySelectorAll('.el-overlay, .v-modal, .el-dialog__wrapper');
-            overlays.forEach(function(el) { el.style.display = 'none'; });
-            var dialogs = document.querySelectorAll('.el-dialog, .el-message-box');
-            dialogs.forEach(function(el) { el.style.display = 'none'; });
-        """)
-        time.sleep(1)
+        time.sleep(2)
+        # 尝试点击弹窗的关闭按钮（X）
+        for _ in range(5):
+            try:
+                close_btn = driver.find_element(By.CSS_SELECTOR, ".el-dialog__headerbtn")
+                close_btn.click()
+                time.sleep(1)
+                break
+            except Exception:
+                time.sleep(1)
         allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
         # 获取登录后的用户名信息
