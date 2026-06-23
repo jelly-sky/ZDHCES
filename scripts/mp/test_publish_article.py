@@ -26,18 +26,11 @@ class TestPublishArticle:
         logging.info("用例的数据如下：用户名：{}， 验证码：{}，"
                      " 预期结果：{}".format(username, code, expect))
         self.login_proxy.login(username, code)
-        # 等待弹窗出现，然后关闭
         driver = UtilsDriver.get_mp_driver()
-        time.sleep(2)
-        # 尝试点击弹窗的关闭按钮（X）
-        for _ in range(5):
-            try:
-                close_btn = driver.find_element(By.CSS_SELECTOR, ".el-dialog__headerbtn")
-                close_btn.click()
-                time.sleep(1)
-                break
-            except Exception:
-                time.sleep(1)
+        # 等待弹窗自动消失（2.5秒）
+        time.sleep(2.5)
+        # 再等3秒确保页面加载完成
+        time.sleep(3)
         allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
         # 获取登录后的用户名信息
