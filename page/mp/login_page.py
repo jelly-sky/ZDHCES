@@ -38,9 +38,15 @@ class LoginProxy:
         self.login_handle = LoginHandle()
     # 登录业务
     def login(self, mobile, code):
+        import time
         # 输入手机号码
         self.login_handle.input_mobile(mobile)
+        time.sleep(0.5)
         # 输入验证码
         self.login_handle.input_code(code)
-        # 单击“登录”按钮
-        self.login_handle.click_login_btn()
+        time.sleep(0.5)
+        # 用JavaScript点击登录按钮
+        driver = self.login_handle.login_page.driver
+        driver.execute_script(
+            "document.querySelector('.el-button--primary').click()"
+        )
