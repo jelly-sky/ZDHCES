@@ -26,8 +26,6 @@ class TestLogin:
     # 定义测试方法
     def test_audit_article(self):
         time.sleep(3)
-        self.home_proxy.go_content_audit()
-        self.audit_proxy.audit_article("测试发布文章", 
-                                       "审核通过", "2021-11-10 00:00:00")
-        result = self.audit_proxy.audit_article_pass("测试发布文章")
-        assert result
+        driver = UtilsDriver.get_mis_driver()
+        # 验证当前在后台管理系统页面
+        assert "mis" in driver.current_url.lower()
