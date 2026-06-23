@@ -26,21 +26,15 @@ class TestPublishArticle:
         logging.info("用例的数据如下：用户名：{}， 验证码：{}，"
                      " 预期结果：{}".format(username, code, expect))
         self.login_proxy.login(username, code)
-        time.sleep(2)
-        # 关闭登录后的警告弹窗
+        time.sleep(3)
+        # 用JavaScript关闭登录后的警告弹窗
         driver = UtilsDriver.get_mp_driver()
-        try:
-            # 尝试点击弹窗的关闭按钮或确定按钮
-            close_btn = driver.find_element(By.CSS_SELECTOR, ".el-dialog__close")
-            close_btn.click()
-        except Exception:
-            try:
-                confirm_btn = driver.find_element(By.CSS_SELECTOR, ".el-message-box__btns .el-button--primary")
-                confirm_btn.click()
-            except Exception:
-                # 如果没有弹窗，按ESC关闭
-                from selenium.webdriver.common.keys import Keys
-                driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+        driver.execute_script(""
+            var overlays = document.querySelectorAll('.el-overlay, .v-modal, .el-dialog__wrapper');
+            overlays.forEach(function(el) { el.style.display = 'none'; });
+            var dialogs = document.querySelectorAll('.el-dialog, .el-message-box');
+            dialogs.forEach(function(el) { el.style.display = 'none'; });
+        """)
         time.sleep(1)
         allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
