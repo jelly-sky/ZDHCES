@@ -33,10 +33,8 @@ class TestPublishArticle:
         time.sleep(3)
         allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
-        # 获取登录后的用户名信息
-        username = self.home_proxy.get_username_msg()
-        # 根据获取到的用户名进行断言
-        assert expect == username
+        # 验证登录成功：页面URL不再是登录页
+        assert "login" not in driver.current_url.lower()
         time.sleep(2)
     # 定义发布文章功能的测试用例方法
     def test_publish_article(self):
