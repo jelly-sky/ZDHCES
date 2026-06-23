@@ -3,6 +3,7 @@ import allure
 import pytest
 from config import BaseDir
 import time
+from selenium.webdriver.common.by import By
 from page.mp.home_page import HomeProxy
 from page.mp.login_page import LoginProxy
 from page.mp.publish_page import PublishProxy
@@ -25,8 +26,23 @@ class TestPublishArticle:
         logging.info("用例的数据如下：用户名：{}， 验证码：{}，"
                      " 预期结果：{}".format(username, code, expect))
         self.login_proxy.login(username, code)
+        time.sleep(2)
+        # 关闭登录后的警告弹窗
+        driver = UtilsDriver.get_mp_driver()
+        try:
+            # 尝试点击弹窗的关闭按钮或确定按钮
+            close_btn = driver.find_element(By.CSS_SELECTOR, ".el-dialog__close")
+            close_btn.click()
+        except Exception:
+            try:
+                confirm_btn = driver.find_element(By.CSS_SELECTOR, ".el-message-box__btns .el-button--primary")
+                confirm_btn.click()
+            except Exception:
+                # 如果没有弹窗，按ESC关闭
+                from selenium.webdriver.common.keys import Keys
+                driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
         time.sleep(1)
-        allure.attach(UtilsDriver.get_mp_driver().get_screenshot_as_png(),
+        allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
         # 获取登录后的用户名信息
         username = self.home_proxy.get_username_msg()
