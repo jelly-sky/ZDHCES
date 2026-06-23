@@ -1,0 +1,8 @@
+{
+  "login_success": {
+    "username": "testid",
+    "password": "testpwd123",
+    "expect": "退出"
+  }
+}
+
