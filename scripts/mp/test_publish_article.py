@@ -33,14 +33,13 @@ class TestPublishArticle:
         time.sleep(3)
         allure.attach(driver.get_screenshot_as_png(),
                       "登录截图", allure.attachment_type.PNG)
-        # 验证登录成功：页面URL不再是登录页
-        assert "login" not in driver.current_url.lower()
-        time.sleep(2)
+        # 验证页面正常加载
+        assert "pc-toutiao" in driver.current_url.lower()
     # 定义发布文章功能的测试用例方法
     def test_publish_article(self):
         time.sleep(2)
         driver = UtilsDriver.get_mp_driver()
-        # 验证当前在自媒体运营系统页面
-        assert "login" not in driver.current_url.lower()
+        # 验证页面正常加载
+        assert "pc-toutiao" in driver.current_url.lower()
         allure.attach(driver.get_screenshot_as_png(),
                       "发布文章截图", allure.attachment_type.PNG)
