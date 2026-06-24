@@ -1,5 +1,5 @@
 """
-清理旧文章 + 发布项目相关文章（含图片）
+发布项目相关文章（直接发布，不删除旧文章）
 运行方式: python manage_articles.py
 """
 import os
@@ -35,27 +35,6 @@ NEW_ARTICLES = [
     {"title": "持续集成流水线搭建", "content": "从代码提交到自动构建、自动测试、报告生成的完整持续集成流水线搭建指南。", "channel": "数据库"},
 ]
 
-def upload_image(driver, wait, image_path):
-    """在发布页面上传封面图片"""
-    if not os.path.exists(image_path):
-        print(f"  图片不存在: {image_path}")
-        return False
-    
-    try:
-        # 查找文件上传input（通常是hidden的）
-        file_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='file']")
-        if file_inputs:
-            file_inputs[0].send_keys(image_path)
-            time.sleep(2)
-            print(f"  图片上传成功: {os.path.basename(image_path)}")
-            return True
-        else:
-            print("  未找到文件上传入口")
-            return False
-    except Exception as e:
-        print(f"  图片上传失败: {e}")
-        return False
-
 def main():
     driver = webdriver.Chrome()
     driver.maximize_window()
@@ -65,51 +44,16 @@ def main():
     print("正在登录...")
     driver.get("http://pc-toutiao-python.itheima.net/#/login")
     time.sleep(2)
-    
-    # 页面已预填手机号和验证码，直接点击登录
     driver.execute_script("document.querySelector('.el-button--primary').click()")
     time.sleep(3)
     print(f"登录成功，当前URL: {driver.current_url}")
     
-    # 2. 进入内容管理 -> 内容列表
-    print("进入文章列表...")
-    content_manage = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[text()='内容管理']")))
-    content_manage.click()
-    time.sleep(1)
-    
-    content_list = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[text()='内容列表']")))
-    content_list.click()
-    time.sleep(3)
-    
-    # 3. 删除旧文章
-    print("开始清理旧文章...")
-    deleted = 0
-    while True:
-        delete_buttons = driver.find_elements(By.CSS_SELECTOR, ".el-button--danger")
-        if not delete_buttons:
-            break
-        try:
-            delete_buttons[0].click()
-            time.sleep(0.5)
-            confirm_btns = driver.find_elements(By.CSS_SELECTOR, ".el-button--primary")
-            for btn in confirm_btns:
-                if btn.is_displayed() and ('确定' in btn.text or '确认' in btn.text):
-                    btn.click()
-                    break
-            time.sleep(1)
-            deleted += 1
-            print(f"已删除第 {deleted} 篇文章")
-        except Exception as e:
-            print(f"删除出错: {e}")
-            break
-    
-    # 4. 发布新文章
-    print(f"\n开始发布 {len(NEW_ARTICLES)} 篇新文章...")
+    # 2. 直接发布新文章
+    print(f"\n开始发布 {len(NEW_ARTICLES)} 篇文章...")
     published = 0
     
     for i, article in enumerate(NEW_ARTICLES):
         try:
-            # 进入发布页面
             driver.get("http://pc-toutiao-python.itheima.net/#/publish")
             time.sleep(2)
             
@@ -131,8 +75,13 @@ def main():
             # 如果有对应图片，上传封面
             if article["title"] in SCREENSHOTS:
                 print(f"  正在上传封面图片...")
-                upload_image(driver, wait, SCREENSHOTS[article["title"]])
-                time.sleep(1)
+                img_path = SCREENSHOTS[article["title"]]
+                if os.path.exists(img_path):
+                    file_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='file']")
+                    if file_inputs:
+                        file_inputs[0].send_keys(img_path)
+                        time.sleep(2)
+                        print(f"  图片上传成功")
             else:
                 # 没图片选择"无图"
                 cover_options = driver.find_elements(By.XPATH, "//*[@role='radiogroup']/label")
@@ -158,7 +107,7 @@ def main():
         except Exception as e:
             print(f"❌ 第 {i+1} 篇发布失败: {article['title']} - {e}")
     
-    print(f"\n完成！共删除 {deleted} 篇旧文章，成功发布 {published} 篇")
+    print(f"\n完成！成功发布 {published} 篇文章")
     driver.quit()
 
 if __name__ == "__main__":
