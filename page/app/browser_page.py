@@ -5,7 +5,7 @@ class BrowserPage(BasePage):
     def __init__(self):
         super().__init__()
         # 浏览器输入框
-        self.browser_input_element = By.ID, "org.chromium.webview_shell:id/url_field"
+        self.browser_input_element = By.ID, "com.android.chromium:id/url_bar"
         # 浏览器”回车”按钮
         self.browser_enter_element = By.CLASS_NAME, "android.widget.ImageButton"
     # 浏览器输入框

@@ -25,7 +25,11 @@ class TestPublishArticle:
     def test_login(self, username, code, expect):
         logging.info("用例的数据如下：用户名：{}， 验证码：{}，"
                      " 预期结果：{}".format(username, code, expect))
-        self.login_proxy.login(username, code)
+        # 页面已预填手机号和验证码，直接点击登录
+        driver = UtilsDriver.get_mp_driver()
+        driver.execute_script(
+            "document.querySelector('.el-button--primary').click()"
+        )
         driver = UtilsDriver.get_mp_driver()
         # 等待弹窗自动消失（2.5秒）
         time.sleep(2.5)

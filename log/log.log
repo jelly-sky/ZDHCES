@@ -1,2 +1,4 @@
-2026-06-23 11:08:41,557 INFO [root] [test_publish_article.py(test_login:25)] - 用例的数据如下：用户名：， 验证码：， 预期结果：python
-2026-06-23 21:46:07,783 INFO [root] [test_publish_article.py(test_login:25)] - 用例的数据如下：用户名：， 验证码：， 预期结果：python
+2026-06-24 09:49:29,237 INFO [root] [test_publish_article.py(test_login:26)] - 用例的数据如下：用户名：12011111111， 验证码：246810， 预期结果：python
+2026-06-24 10:38:27,860 INFO [root] [test_publish_article.py(test_login:26)] - 用例的数据如下：用户名：12011111111， 验证码：246810， 预期结果：python
+2026-06-24 11:04:53,950 INFO [root] [test_publish_article.py(test_login:26)] - 用例的数据如下：用户名：12011111111， 验证码：246810， 预期结果：python
+2026-06-24 11:08:17,930 INFO [root] [test_publish_article.py(test_login:26)] - 用例的数据如下：用户名：12011111111， 验证码：246810， 预期结果：python

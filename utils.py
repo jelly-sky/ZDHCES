@@ -2,6 +2,7 @@ import json
 import time
 from selenium import webdriver
 from appium import webdriver as app_driver
+from appium.options.android import UiAutomator2Options
 from selenium.webdriver.common.by import By
 # 定义工具类
 class UtilsDriver:
@@ -49,17 +50,17 @@ class UtilsDriver:
     @classmethod
     def get_app_driver(cls):
         if cls._app_driver is None:
-            des_cap = {
-                "platformName": "android",
-                "platformVersion": "8.0",
-                "deviceName": "****",
-                "appPackage": "org.chromium.webview_shell",
-                "appActivity": ".WebViewBrowserActivity",
-                "noReset": True,
-                "resetKeyboard": True,
-                "unicodeKeyboard": True
-            }
-            cls._app_driver = app_driver.Remote("http://localhost:4723/wd/hub", des_cap)
+            options = UiAutomator2Options()
+            options.platform_name = "android"
+            options.platform_version = "12"
+            options.device_name = "MuMu"
+            options.app_package = "com.android.chromium"
+            options.app_activity = "com.google.android.apps.chrome.Main"
+            options.no_reset = True
+            options.reset_keyboard = True
+            options.unicode_keyboard = True
+            options.set_capability("appium:adbExecPath", r"D:\MuMu模拟器\MuMu Player 12\shell\adb.exe")
+            cls._app_driver = app_driver.Remote("http://localhost:4723/wd/hub", options=options)
         return cls._app_driver
     # 定义退出App用户端浏览器驱动的方法
     @classmethod
